@@ -10,13 +10,18 @@
 \begin{document}
 
 \section{线性基}
-性质:
+
+\Large{\textbf{性质}}
+\normalsize
+
 \begin{enumerate}
     \item 原序列里面的任意一个数都可以由线性基里面的一些数异或得到。
     \item 线性基里面的任意一些数异或起来都不能得到0 
     \item 线性基里面的数的个数唯一，并且在保持性质一的前提下，数的个数是最少的
 \end{enumerate}
-用法:
+
+\Large{\textbf{用法}}
+\normalsize
 
 \begin{enumerate}
     \item 线性基可以套在线段树上使用，线段树区间合并的时候将一个区间的所有值插入到另外一个区间即可。
@@ -226,5 +231,92 @@
         }
     }
 \end{lstlisting}
+
+\section{后缀数组}
+
+\Large{\textbf{定义}}
+\normalsize
+
+\begin{enumerate}
+    \item SA[i] 排名为i的后缀在原串组对应的下标
+    \item Rank[i] 原数组i开始的后缀的排名
+    \item height[i]表示sa[i-1]和sa[i]的最长公共前缀长度。
+    \item h[i] 后缀Suffix[i]和它前一名的后缀的最长公共前缀
+    \item 时间复杂度：$O(nlog_n)$
+\end{enumerate}
+
+\Large{\textbf{应用}}
+\normalsize
+
+
+\begin{lstlisting}[language={c}]
+    #include <iostream>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #define MAXN 10000000
+    char s[MAXN];
+    int n, sa[MAXN], rank[MAXN], height[MAXN], t1[MAXN], t2[MAXN], c[MAXN];
+    int a[MAXN];
+    void SAsort(int n, int m) {
+        int *x = t1, *y = t2;
+        for (int i = 1; i <= m; i++)
+            c[i] = 0;
+        for (int i = 1; i <= n; i++)
+            c[x[i] = a[i]]++;
+        for (int i = 1; i <= m; i++)
+            c[i] += c[i - 1];
+        for (int i = n; i >= 1; i--)
+            sa[c[x[i]]--] = i;
+        for (int k = 1, p = 0; k <= n && p <= n; k <<= 1) {
+            p = 0;
+            for (int i = n - k + 1; i <= n; i++)
+                y[++p] = i;
+            for (int i = 1; i <= n; i++)
+                if (sa[i] > k)
+                    y[++p] = sa[i] - k;
+            for (int i = 1; i <= m; i++)
+                c[i] = 0;
+            for (int i = 1; i <= n; i++)
+                c[x[y[i]]]++;
+            for (int i = 1; i <= m; i++)
+                c[i] += c[i - 1];
+            for (int i = n; i >= 1; i--)
+                sa[c[x[y[i]]]--] = y[i];
+            std::swap(x, y);
+            p = 2;
+            x[sa[1]] = 1;
+            for (int i = 2; i <= n; i++)
+                x[sa[i]] =
+                    y[sa[i - 1]] == y[sa[i]] && y[sa[i - 1] + k] == y[sa[i] + k]
+                        ? p - 1
+                        : p++;
+            m = p;
+        }
+        for (int i = 1; i <= n; i++)
+            rank[sa[i]] = i;
+        int f = 0;
+        for (int i = 1; i <= n; i++) {
+            int j = sa[rank[i - 1]];
+            if (f)
+                f--;
+            while (s[j + f] == s[i + f])
+                f++;
+            height[rank[i]] = f;
+        }
+    }
+    int main() {
+        scanf("%s", s);
+        n = strlen(s);
+        for (int i = 1; i <= n; i++)
+            a[i] = s[i - 1];
+        SAsort(n, 10000);
+        for (int i = 1; i <= n; i++)
+            printf("%d%c", sa[i], i == n ? '\n' : ' ');
+        return 0;
+    }
+\end{lstlisting}
+
+
 
 \end{document}
